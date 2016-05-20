@@ -61,7 +61,7 @@ public class AppDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.app_detail)).setText(mItem.name);
+            ((TextView) rootView.findViewById(R.id.app_detail)).setText(mItem.packageName);
         }
 
         return rootView;

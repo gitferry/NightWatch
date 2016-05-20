@@ -37,7 +37,7 @@ public class DummyContent {
         {
             ApplicationInfo appinfo = packages.get(index);
             String appName = pm.getApplicationLabel(appinfo).toString();
-            addItem(createDummyItem(index, appName));
+            addItem(createDummyItem(index, appName, appinfo.packageName));
         }
     }
 
@@ -46,8 +46,8 @@ public class DummyContent {
         ITEM_MAP.put(item.id, item);
     }
 
-    private static DummyItem createDummyItem(int id, String appName) {
-        return new DummyItem(String.valueOf(id), appName);
+    private static DummyItem createDummyItem(int id, String appName, String packageName) {
+        return new DummyItem(String.valueOf(id), appName, packageName);
     }
 
     private static String makeDetails(int position) {
@@ -65,10 +65,12 @@ public class DummyContent {
     public static class DummyItem {
         public final String name;
         public final String id;
+        public final String packageName;
 
-        public DummyItem(String id, String name) {
+        public DummyItem(String id, String name, String packageName) {
             this.id = id;
             this.name = name;
+            this.packageName = packageName;
         }
 
         @Override
