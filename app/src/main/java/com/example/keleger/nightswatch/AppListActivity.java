@@ -45,7 +45,6 @@ public class AppListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -108,6 +107,7 @@ public class AppListActivity extends AppCompatActivity {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, AppDetailActivity.class);
                         intent.putExtra(AppDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra("package_name", holder.mItem.packageName);
 
                         context.startActivity(intent);
                     }

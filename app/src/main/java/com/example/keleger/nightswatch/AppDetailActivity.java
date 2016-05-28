@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,16 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.example.keleger.nightswatch.MyApplication;
+import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+
+
 
 import com.example.keleger.nightswatch.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +36,7 @@ import java.util.List;
  */
 public class AppDetailActivity extends AppCompatActivity {
 
+    private String package_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +44,9 @@ public class AppDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Intent intent = getIntent();
+        package_name = intent.getStringExtra("package_name");
+
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -71,52 +82,52 @@ public class AppDetailActivity extends AppCompatActivity {
                     .add(R.id.app_detail_container, fragment)
                     .commit();
         }
-        View recyclerView = findViewById(R.id.app_list);
+        View recyclerView = findViewById(R.id.permission_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo(new Intent(this, AppListActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
+    //    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == android.R.id.home) {
+//            // This ID represents the Home or Up button. In the case of this
+//            // activity, the Up button is shown. For
+//            // more details, see the Navigation pattern on Android Design:
+//            //
+//            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+//            //
+//            navigateUpTo(new Intent(this, AppListActivity.class));
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(getPermissionList(package_name)));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<String> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<String> items) {
             mValues = items;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.app_list_content, parent, false);
+                    .inflate(R.layout.permission_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-
+            holder.mContentView.setText(mValues.get(position));
         }
 
         @Override
@@ -126,22 +137,38 @@ public class AppDetailActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.name);
+                mContentView = (TextView) view.findViewById(R.id.permission_name);
             }
 
             @Override
-            public String toString(){
+            public String toString() {
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
         }
 
+    }
+
+    private List<String> getPermissionList(String packageName) {
+        List<String> permissionList = new ArrayList<String>();
+        try {
+            //Get Permissions
+            PackageManager pm = getPackageManager();
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+            String[] requestedPermissions = packageInfo.requestedPermissions;
+            if (requestedPermissions != null) {
+                for (int i = 0; i < requestedPermissions.length; i++) {
+                    Log.d("test", requestedPermissions[i]);
+                    permissionList.add(requestedPermissions[i]);
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return permissionList;
     }
 }
