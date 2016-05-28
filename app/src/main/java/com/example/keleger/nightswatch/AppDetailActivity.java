@@ -78,9 +78,9 @@ public class AppDetailActivity extends AppCompatActivity {
                     getIntent().getStringExtra(AppDetailFragment.ARG_ITEM_ID));
             AppDetailFragment fragment = new AppDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.app_detail_container, fragment)
-                    .commit();
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.app_detail_container, fragment)
+//                    .commit();
         }
         View recyclerView = findViewById(R.id.permission_list);
         assert recyclerView != null;
