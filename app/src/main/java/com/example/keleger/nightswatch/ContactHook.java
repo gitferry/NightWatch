@@ -85,7 +85,7 @@ public class ContactHook implements IXposedHookLoadPackage {
                     XSharedPreferences pre = new XSharedPreferences("com.example.keleger.nightswatch", "permissions");
                     if (!pre.getBoolean("contact", false))
                         return;
-                    XposedBridge.log("   Hooked method: " + param.method);
+//                    XposedBridge.log("   Hooked method: " + param.method);
                     String[] cNames = ((Cursor) param.getResult()).getColumnNames();
                     for(int i=0; i<cNames.length; i++){
 //                        XposedBridge.log("   Field[" + i + "] = " + cNames[i]);
